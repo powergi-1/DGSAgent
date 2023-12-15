@@ -53,4 +53,22 @@ public class CtrlController {
 		}
 		return retMap;
 	}
+
+	@GetMapping("/ctrl/{gmname}/{userid}/restart")
+	@ResponseBody
+	public Map<String, String> restartServer(@PathVariable("gmname") String gmname, @PathVariable("userid") String userid) {
+		Map<String, String> retMap = new HashMap<>();
+		CtrlVO paramVo = new CtrlVO();
+		paramVo.setGameName(gmname);
+		paramVo.setUserId(userid);
+		paramVo.setPort("12314");
+		
+		try {
+			ctrlService.restartServer(paramVo);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.getStackTrace();
+		}
+		return retMap;
+	}
 }

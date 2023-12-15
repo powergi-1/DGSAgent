@@ -16,7 +16,7 @@ import com.nnb.DSGAgent.ctrl.Service.CtrlVO;
 @Service("ctrlService")
 public class CtrlServiceImpl implements CtrlService{
 	private final String LINUX_BASE_DIR = "/home/steam/steamapps/DST";
-	private final String SERVER_SHELL_NAME = "start_dst.sh";
+	private final String SERVER_SHELL_NAME = "dst_proc.sh";
 	private final String PARAM_PORT = "11112";//"\"11112\"";
 	private final String PARAM_MAX_PLAYERS = "18";//"\"18\"";
 	private final String PARAM_CLUSTER_NAME = "Let us go ";//"\"Let us go!!\"";
@@ -101,6 +101,40 @@ public class CtrlServiceImpl implements CtrlService{
 		}
 
 		logger.info("stopServer() out");
+		return 0;
+	}
+	
+	public int restartServer(CtrlVO startinfoVo) {
+		logger.info("restartServer() in");
+		String shellCmd = "" + LINUX_BASE_DIR + "/" + SERVER_SHELL_NAME;
+		
+		logger.info(shellCmd);
+		logger.info("Game Name : " + startinfoVo.getGameName());
+		logger.info("User ID : " + startinfoVo.getUserId());
+		logger.info("Port : " + startinfoVo.getPort());
+		String[] cmd = {shellCmd, "restart", startinfoVo.getUserId()};		
+		Runtime rt = Runtime.getRuntime(); 
+		try {
+			logger.info("pb.start() before");
+			//Process process = pb.start();
+			Process process = rt.exec(cmd);
+			logger.info("pb.start() after");
+			
+			StringBuilder output = new StringBuilder();
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(process.getInputStream())
+					);
+			String line;
+			while((line = reader.readLine()) != null ) {
+				output.append(line);
+			}
+			logger.info(output.toString());
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.getStackTrace();
+		}
+
+		logger.info("restartServer() out");
 		return 0;
 	}
 }
